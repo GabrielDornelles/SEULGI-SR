@@ -109,10 +109,10 @@ async def skip(ctx):
             voice_channel.source = player
 
         await ctx.send('Now playing: {}'.format(player.title))
-        del(queue[0])
         await client.change_presence(activity=discord.Activity.listening, name=('{}'.format(player.title)))
+        del(queue[0])
     else:
-        await ctx.send("There's none music in the queue")
+        await ctx.send("There's no music in the queue")
 
 @client.command(name='remove', help='This command removes an item from the list')
 async def remove(ctx, number):
