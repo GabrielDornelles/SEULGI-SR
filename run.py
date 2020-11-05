@@ -111,7 +111,7 @@ async def skip(ctx):
         await ctx.send('Now playing: {}'.format(player.title))
         del(queue[0])
     else:
-        await ctx.send('There's none music in the queue')
+        await ctx.send("There's none music in the queue")
 
 @client.command(name='remove', help='This command removes an item from the list')
 async def remove(ctx, number):
