@@ -111,7 +111,7 @@ async def skip(ctx):
         await ctx.send('Now playing: {}'.format(player.title))
         del(queue[0])
     else:
-        await ctx.send('There's none music in the queue')
+        await ctx.send("There's none music in the queue")
 
 @client.command(name='remove', help='This command removes an item from the list')
 async def remove(ctx, number):
@@ -155,12 +155,14 @@ async def play(ctx, url=None,*args):
 async def pause(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.cancel()
     voice_channel.pause()
 
 @client.command(name='resume', help='This command resumes the song!')
 async def resume(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.start(ctx)
     voice_channel.resume()
 
 @client.command(name='view', help='This command shows the queue')
@@ -170,12 +172,14 @@ None
 @client.command(name='leave', help='This command stops makes the bot leave the voice channel')
 async def leave(ctx):
     voice_client = ctx.message.guild.voice_client
+    playing.cancel()
     await voice_client.disconnect()
 
 @client.command(name='stop', help='This command stops the song!')
 async def stop(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.cancel()
     voice_channel.stop()
 
 @tasks.loop(seconds=1)
@@ -187,7 +191,7 @@ async def playing(ctx):
             player = await YTDLSource.from_url(queue[0], loop=client.loop)
             voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
         await ctx.send('**Now playing:** {}'.format(player.title))
-        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
+        #await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
         del (queue[0])
     else:
         pass
