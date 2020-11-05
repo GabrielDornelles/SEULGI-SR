@@ -110,6 +110,7 @@ async def skip(ctx):
 
         await ctx.send('Now playing: {}'.format(player.title))
         del(queue[0])
+        await client.change_presence(activity=discord.Activity.listening, name=('{}'.format(player.title)))
     else:
         await ctx.send("There's none music in the queue")
 
@@ -149,6 +150,7 @@ async def play(ctx, url=None,*args):
         voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
         playing.start(ctx)
     await ctx.send('**Now playing:** {}'.format(player.title))
+    await client.change_presence(activity=discord.Activity.listening, name=('{}'.format(player.title)))
     del(queue[0])
 
 @client.command(name='pause', help='This command pauses the song')
@@ -191,7 +193,7 @@ async def playing(ctx):
             player = await YTDLSource.from_url(queue[0], loop=client.loop)
             voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
         await ctx.send('**Now playing:** {}'.format(player.title))
-        #await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
         del (queue[0])
     else:
         pass
