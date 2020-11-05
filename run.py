@@ -198,4 +198,4 @@ async def playing(ctx):
     else:
         pass
       
-client.run('NzczMjk1NzY2MDI5NDY3Njk4.X6HJzQ.DO_vISZY14pFhKn6_Z96yzqICXY')
+client.run('')
