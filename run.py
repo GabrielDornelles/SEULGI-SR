@@ -109,10 +109,9 @@ async def skip(ctx):
             voice_channel.source = player
 
         await ctx.send('Now playing: {}'.format(player.title))
-        await client.change_presence(activity=discord.Activity.listening, name=('{}'.format(player.title)))
         del(queue[0])
     else:
-        await ctx.send("There's no music in the queue")
+        await ctx.send("There's none music in the queue")
 
 @client.command(name='remove', help='This command removes an item from the list')
 async def remove(ctx, number):
@@ -140,43 +139,49 @@ async def play(ctx, url=None,*args):
     for word in args:
         helptext+= ' '+word
 
-    queue.append(helptext)
+    player = await YTDLSource.from_url(helptext, loop=client.loop)
+    queue.append(player)
     if voice_channel.is_playing():
-        await ctx.send(f'`{queue[len(queue)-1]}` added to queue!')
+        await ctx.send(f'`{queue[len(queue)-1].title}` added to queue!')
         return
 
     async with ctx.typing():
-        player = await YTDLSource.from_url(queue[0], loop=client.loop)
-        voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+        #player = await YTDLSource.from_url(queue[0], loop=client.loop)
+        voice_channel.play(queue[0], after=lambda e: print('Player error: %s' % e) if e else None)
         playing.start(ctx)
-    await ctx.send('**Now playing:** {}'.format(player.title))
+    await ctx.send('**Now playing:** {}'.format(queue[0].title))
     del(queue[0])
 
 @client.command(name='pause', help='This command pauses the song')
 async def pause(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.cancel()
     voice_channel.pause()
 
 @client.command(name='resume', help='This command resumes the song!')
 async def resume(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.start(ctx)
     voice_channel.resume()
 
 @client.command(name='view', help='This command shows the queue')
 async def view(ctx):
-    await ctx.send(f'Your queue is now `{queue}!`')
+    for i in range(len(queue)):
+        await ctx.send(f'Your queue is now `{queue[i].title}!`')
 None
 @client.command(name='leave', help='This command stops makes the bot leave the voice channel')
 async def leave(ctx):
     voice_client = ctx.message.guild.voice_client
+    playing.cancel()
     await voice_client.disconnect()
 
 @client.command(name='stop', help='This command stops the song!')
 async def stop(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.cancel()
     voice_channel.stop()
 
 @tasks.loop(seconds=1)
@@ -185,12 +190,12 @@ async def playing(ctx):
     voice_channel = ctx.message.guild.voice_client
     if(voice_channel.is_playing() is False):
         async with ctx.typing():
-            player = await YTDLSource.from_url(queue[0], loop=client.loop)
-            voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
-        await ctx.send('**Now playing:** {}'.format(player.title))
+            #player = await YTDLSource.from_url(queue[0], loop=client.loop)
+            voice_channel.play(queue[0], after=lambda e: print('Player error: %s' % e) if e else None)
+        await ctx.send('**Now playing:** {}'.format(queue[0].title))
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
         del (queue[0])
     else:
         pass
       
-client.run('')
+client.run('NzczMjk1NzY2MDI5NDY3Njk4.X6HJzQ.DO_vISZY14pFhKn6_Z96yzqICXY')
