@@ -97,6 +97,22 @@ async def queue_(ctx, url, *args):
     queue.append(helptext)
     await ctx.send(f'`{queue[0]}` added to queue!')
 
+@client.command(name='skip', help='This command skip a song')
+async def skip(ctx):
+    global queue
+
+    server = ctx.message.guild
+    voice_channel = server.voice_client
+    if (len(queue)):
+        async with ctx.typing():
+            player = await YTDLSource.from_url(queue[0], loop=client.loop)
+            voice_channel.source = player
+
+        await ctx.send('Now playing: {}'.format(player.title))
+        del(queue[0])
+    else:
+        await ctx.send('There's none music in the queue')
+
 @client.command(name='remove', help='This command removes an item from the list')
 async def remove(ctx, number):
     global queue
