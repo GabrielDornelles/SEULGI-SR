@@ -13,6 +13,6 @@ A: https://www.youtube.com/watch?v=Gd9HGUDaY1Y&feature=youtu.be&t=556
 
 For now Seulgi is just a simple bot able to create playlists and play youtube songs by searching its name or adding a link to the queue list.
 it also has a bunch of main implementations in order to avoid the bot breaking through its commands (raising errors, stoping working etc.)
-Also we've implemented the right commands order, so now you can call Seulgi commands like play directly, and not needing to add her to the channel or anything, its working quite well, simple and clean(cleanest as we can do, you can report bugs so we can try to solve it). 
+Also we've implemented the right commands order, so now you can call Seulgi commands like play directly, and not needing to add her to the channel or anything, its working quite well, simple and clean(as clean as we tested it, you can report bugs so we can try to solve it). 
 
 Also Seulgi will display to your entire server what she's playing in a call, which is not implemented in a bunch of music bots ;)
