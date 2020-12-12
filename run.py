@@ -80,7 +80,7 @@ async def teamo(ctx):
 @client.command(name='join', help='This command makes the bot join the voice channel')
 async def join(ctx):
     if not ctx.message.author.voice:
-        await ctx.send("You are not connected to a voice channel")
+        await ctx.send("Você não está em um canal, e se nos encontrassemos no Geral? 👉👈")
         return
     
     else:
@@ -109,6 +109,7 @@ async def skip(ctx):
             voice_channel.source = player
 
         await ctx.send('Now playing: {}'.format(player.title))
+        await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
         del(queue[0])
     else:
         await ctx.send("There's none music in the queue")
@@ -149,18 +150,21 @@ async def play(ctx, url=None,*args):
         voice_channel.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
         playing.start(ctx)
     await ctx.send('**Now playing:** {}'.format(player.title))
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
     del(queue[0])
 
 @client.command(name='pause', help='This command pauses the song')
 async def pause(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.cancel()
     voice_channel.pause()
 
 @client.command(name='resume', help='This command resumes the song!')
 async def resume(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.start(ctx)
     voice_channel.resume()
 
 @client.command(name='view', help='This command shows the queue')
@@ -170,12 +174,14 @@ None
 @client.command(name='leave', help='This command stops makes the bot leave the voice channel')
 async def leave(ctx):
     voice_client = ctx.message.guild.voice_client
+    playing.cancel()
     await voice_client.disconnect()
 
 @client.command(name='stop', help='This command stops the song!')
 async def stop(ctx):
     server = ctx.message.guild
     voice_channel = server.voice_client
+    playing.cancel()
     voice_channel.stop()
 
 @tasks.loop(seconds=1)
@@ -191,5 +197,5 @@ async def playing(ctx):
         del (queue[0])
     else:
         pass
-      
-client.run('')
+
+client.run('') #add your token there and run
