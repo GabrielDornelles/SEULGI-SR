@@ -1,5 +1,14 @@
 # SEULGI-SR
 
+## Install/Run
+```shell
+sudo apt install ffmpeg
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+python3 run.py
+```
+
 # What is Seulgi-sr?
 Seulgi-sr is a discord bot integrated to Amazon Echo Dot (Alexa).
 We plan to make Seulgi a bot that works with your voice commands instead of discord chat commands

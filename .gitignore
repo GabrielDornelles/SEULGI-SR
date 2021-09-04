@@ -1,3 +1,8 @@
+# Music files downloaded
+*.webm
+*.m4a
+*.webm.part
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

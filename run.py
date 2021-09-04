@@ -4,7 +4,7 @@ from discord.voice_client import VoiceClient
 import youtube_dl
 import urllib.parse, urllib.request
 import re
-
+import json
 from random import choice
 
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -50,9 +50,9 @@ class YTDLSource(discord.PCMVolumeTransformer):
         filename = data['url'] if stream else ytdl.prepare_filename(data)
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
-client = commands.Bot(command_prefix='Seulgi ')
+client = commands.Bot(command_prefix='seulgi ')
 
-status = ['🦋 𝕯𝖔𝖜𝖔𝖗𝖓𝖊𝖑𝖑𝖊𝖘 🦋 assistant', 'Um mosquitinho', 'Seulgi play ~Song Name~']
+status = ['seulgi queue **url/song name**', 'seulgi view', 'seulgi play ~Song Name~']
 queue = []
 
 @client.event
@@ -73,9 +73,16 @@ async def hello(ctx):
     responses = ['***grumble*** Why did you wake me up?', 'Top of the morning to you lad!', 'Hello, how are you?', 'Hi', '**Wasssuup!**']
     await ctx.send(choice(responses))
 
-@client.command(name='teamo', help='This returns the true love')
-async def teamo(ctx):
-    await ctx.send('tb te amo <3')
+@client.command(name="quem", help='This returns the true love')
+async def teamo(ctx, *args):
+    buf=""
+    for x in args:
+        buf+= x + " "
+    buf = buf[:-1]
+    if buf=="e meu amor":
+        await ctx.send('tami')
+    else:
+        await ctx.send("quem?")
 
 @client.command(name='join', help='This command makes the bot join the voice channel')
 async def join(ctx):
@@ -112,14 +119,13 @@ async def skip(ctx):
         await client.change_presence(activity=discord.Activity(type=discord.ActivityType.listening, name=('{}'.format(player.title))))
         del(queue[0])
     else:
-        await ctx.send("There's none music in the queue")
+        await ctx.send("**Your queue is empty!**")
 
 @client.command(name='remove', help='This command removes an item from the list')
 async def remove(ctx, number):
     global queue
     try:
         del(queue[int(number)])
-        
         await ctx.send(f'Your queue is now `{queue}!`')
 
     except:
@@ -135,7 +141,6 @@ async def play(ctx, url=None,*args):
 
     server = ctx.message.guild
     voice_channel = server.voice_client
-    
     helptext = url
     for word in args:
         helptext+= ' '+word
@@ -169,8 +174,11 @@ async def resume(ctx):
 
 @client.command(name='view', help='This command shows the queue')
 async def view(ctx):
-    await ctx.send(f'Your queue is now `{queue}!`')
-None
+    indexes = list(range(len(queue)))
+    pretty_display = dict(zip(indexes,queue))
+
+    await ctx.send(f'Your queue is now:\n```py\n{json.dumps(pretty_display, indent=4)}```')
+
 @client.command(name='leave', help='This command stops makes the bot leave the voice channel')
 async def leave(ctx):
     voice_client = ctx.message.guild.voice_client
